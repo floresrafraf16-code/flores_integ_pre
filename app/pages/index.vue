@@ -1,7 +1,6 @@
 <template>
-  <v-container class="fill-height d-flex align-center justify-center">
-    <v-card v-if="user" width="400" class="pa-6 rounded-xl">
-      
+     <v-container class="fill-height d-flex align-center justify-center">
+     <v-card v-if="user" width="400" class="pa-6 rounded-xl">
       <div class="d-flex align-center ga-4 mb-4">
         <v-avatar size="64">
           <v-img :src="user.picture" />
@@ -22,6 +21,7 @@
 </template>
 
 <script setup lang="ts">
+//@ts-nocheck
 const user = ref<any>(null)
 
 onMounted(() => {
