@@ -14,7 +14,7 @@
           ></v-list-item>
         </v-list>
 
-        <v-divider></v-divider>
+        <v-divider></v-divider>git remote set-url origin https://<YOUR_TOKEN>@github.com/floresrafraf16-code/system-integ-september.git
 
         <v-list density="compact" nav>
           <v-list-item prepend-icon="mdi mdi-view-dashboard" title="Dashboard" value="myfiles"></v-list-item>
