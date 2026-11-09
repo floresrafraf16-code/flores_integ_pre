@@ -3,7 +3,7 @@
      <v-card v-if="user" width="400" class="pa-6 rounded-xl">
       <div class="d-flex align-center ga-4 mb-4">
         <v-avatar size="64">
-          <v-img :src="user.picture" />
+          <v-img :src="user.picture"/>
         </v-avatar>
 
         <div>
