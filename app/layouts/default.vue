@@ -1,10 +1,11 @@
+
 <template>
   <v-app>
+    <!-- Navigation Drawer -->
     <v-navigation-drawer
       v-model="drawer"
       color="black"
-      @mouseenter="drawer = true"
-      @mouseleave="drawer = false"
+      temporary
     >
       <v-list>
         <v-list-item
@@ -17,35 +18,52 @@
       <v-divider></v-divider>
 
       <v-list density="compact" nav>
-        <v-list-item prepend-icon="mdi mdi-view-dashboard" title="Dashboard" to="/"></v-list-item>
-        <v-list-item prepend-icon="mdi mdi-qrcode-scan" title="QR Scanner" to="qr-scanner"></v-list-item>
-        <v-list-item prepend-icon="mdi mdi-weather-partly-cloudy" title="Weather App" to="weather"></v-list-item>
+        <v-list-item
+          prepend-icon="mdi-view-dashboard"
+          title="Dashboard"
+          to="/"
+          @click="drawer = false"
+        ></v-list-item>
+
+        <v-list-item
+          prepend-icon="mdi-qrcode-scan"
+          title="QR Scanner"
+          to="/qr-scanner"
+          @click="drawer = false"
+        ></v-list-item>
+
+        <v-list-item
+          prepend-icon="mdi-weather-partly-cloudy"
+          title="Weather App"
+          to="/weather"
+          @click="drawer = false"
+        ></v-list-item>
       </v-list>
     </v-navigation-drawer>
 
+    <!-- App Bar -->
     <v-app-bar color="black" elevation="1">
       <template v-slot:prepend>
-        <v-app-bar-nav-icon 
-          class="hover-icon" 
-          @mouseenter="drawer = true"
+        <v-app-bar-nav-icon
+          class="hover-icon"
+          @click="drawer = !drawer"
         ></v-app-bar-nav-icon>
       </template>
 
       <v-app-bar-title>SCAN ME</v-app-bar-title>
     </v-app-bar>
 
+    <!-- Main Content -->
     <v-main>
       <slot />
     </v-main>
   </v-app>
 </template>
 
-<script>
-export default {
-  data: () => ({
-    drawer: false,
-  }),
-}
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const drawer = ref(false)
 </script>
 
 <style scoped>
