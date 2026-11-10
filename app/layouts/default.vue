@@ -9,9 +9,9 @@
     >
       <v-list>
         <v-list-item
-          prepend-avatar="/raf.jpg"
-          subtitle="floresrafraf16@gmail.com"
-          title="Rafael Flores"
+          :prepend-avatar="userPicture"
+          :subtitle="userEmail"
+          :title="userName"
         ></v-list-item>
       </v-list>
 
@@ -61,9 +61,89 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 
 const drawer = ref(false)
+
+// Default account information
+const userName = ref('Guest User')
+const userEmail = ref('No email available')
+const userPicture = ref('/raf.jpg')
+
+// Load logged-in Google account
+const loadUser = () => {
+  const savedUser = localStorage.getItem('google_user')
+
+  if (savedUser) {
+    try {
+      const user = JSON.parse(savedUser)
+
+      // Dynamic Google account information
+      userName.value =
+        user.name ||
+        user.displayName ||
+        user.given_name ||
+        'Guest User'
+
+      userEmail.value =
+        user.email ||
+        'No email available'
+
+      userPicture.value =
+        user.picture ||
+        user.avatar ||
+        user.image ||
+        '/raf.jpg'
+
+    } catch (error) {
+      console.error('Error loading Google user:', error)
+    }
+  } else {
+    userName.value = 'Guest User'
+    userEmail.value = 'No email available'
+    userPicture.value = '/raf.jpg'
+  }
+}
+
+// Listen for successful login
+const handleUserUpdate = () => {
+  loadUser()
+}
+
+// Listen for account changes in other tabs
+const handleStorageChange = (event: StorageEvent) => {
+  if (event.key === 'google_user') {
+    loadUser()
+  }
+}
+
+// Initialize account information
+onMounted(() => {
+  loadUser()
+
+  window.addEventListener(
+    'google-user-updated',
+    handleUserUpdate
+  )
+
+  window.addEventListener(
+    'storage',
+    handleStorageChange
+  )
+})
+
+// Remove event listeners
+onBeforeUnmount(() => {
+  window.removeEventListener(
+    'google-user-updated',
+    handleUserUpdate
+  )
+
+  window.removeEventListener(
+    'storage',
+    handleStorageChange
+  )
+})
 </script>
 
 <style scoped>
