@@ -1,24 +1,33 @@
 
 <template>
-  <v-container class="fill-height d-flex align-center justify-center">
-    <v-card width="400" class="pa-6 rounded-xl">
-      <v-card-title class="text-center text-h5">
-        Login
-      </v-card-title>
-
-      <v-card-text>
-        <v-btn
-          block
-          color="primary"
-          size="large"
-          prepend-icon="mdi-google"
-          @click="loginWithGoogle"
+  <v-app class="login-app">
+    <v-main class="login-background">
+      <v-container class="fill-height d-flex align-center justify-center">
+        <v-card
+          width="400"
+          max-width="100%"
+          class="pa-6 rounded-xl login-card"
+          elevation="4"
         >
-          Sign in with Google
-        </v-btn>
-      </v-card-text>
-    </v-card>
-  </v-container>
+          <v-card-title class="text-center text-h5">
+            Login
+          </v-card-title>
+
+          <v-card-text>
+            <v-btn
+              block
+              color="primary"
+              size="large"
+              prepend-icon="mdi-google"
+              @click="loginWithGoogle"
+            >
+              Sign in with Google
+            </v-btn>
+          </v-card-text>
+        </v-card>
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
 
 <script setup lang="ts">
@@ -30,13 +39,7 @@ definePageMeta({
 
 const config = useRuntimeConfig()
 
-// Check Google Client ID
 const googleClientId = config.public.googleClientId
-
-console.log('========== GOOGLE AUTH DEBUG ==========')
-console.log('Google Client ID:', googleClientId)
-console.log('Client ID exists:', !!googleClientId)
-console.log('=======================================')
 
 declare global {
   interface Window {
@@ -46,18 +49,16 @@ declare global {
 
 const loginWithGoogle = () => {
   if (!googleClientId) {
-    console.error('ERROR: Google Client ID is missing!')
-    alert('Google Client ID is missing. Check your .env file.')
+    console.error('Google Client ID is missing!')
+    alert('Google Client ID is missing. Check your environment variables.')
     return
   }
 
   if (!window.google?.accounts?.oauth2) {
-    console.error('ERROR: Google Identity Services not loaded!')
+    console.error('Google Identity Services not loaded!')
     alert('Google login is not ready. Please refresh.')
     return
   }
-
-  console.log('Starting Google authentication...')
 
   const client = window.google.accounts.oauth2.initTokenClient({
     client_id: googleClientId,
@@ -80,8 +81,6 @@ const loginWithGoogle = () => {
           }
         )
 
-        console.log('Google User:', userInfo)
-
         localStorage.setItem(
           'google_user',
           JSON.stringify(userInfo)
@@ -90,6 +89,10 @@ const loginWithGoogle = () => {
         localStorage.setItem(
           'google_token',
           response.access_token
+        )
+
+        window.dispatchEvent(
+          new Event('google-user-updated')
         )
 
         await navigateTo('/')
@@ -104,3 +107,24 @@ const loginWithGoogle = () => {
   client.requestAccessToken()
 }
 </script>
+
+<style>
+html,
+body,
+#__nuxt {
+  min-height: 100%;
+  margin: 0;
+  background-color: #000000 !important;
+}
+
+.login-app,
+.login-background {
+  min-height: 100vh;
+  background-color: #000000 !important;
+}
+
+.login-card {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+</style>
